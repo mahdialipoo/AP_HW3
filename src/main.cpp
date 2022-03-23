@@ -6,6 +6,11 @@ int main(int argc, char **argv)
 {
     if (true) // make false to run unit-tests
     {
+        Node a{}, b{};
+        a.value = 5;
+        b.value = 45;
+        if (12 == a)
+            std::cout << "ka" << std::endl;
         // debug section
     }
     else
