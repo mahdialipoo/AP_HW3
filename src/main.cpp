@@ -4,14 +4,14 @@
 
 int main(int argc, char **argv)
 {
-    if (true) // make false to run unit-tests
+    if (0) // make false to run unit-tests
     {
-        Node a{}, b{};
-        a.value = 5;
-        b.value = 45;
-        if (12 == a)
-            std::cout << "ka" << std::endl;
-        // debug section
+        BST bst{};
+        bst.add_node(10);
+        bst.add_node(20);
+        bst.add_node(5);
+        std::cout << ((bst.root)->value) << std::endl;
+        //  debug section
     }
     else
     {
