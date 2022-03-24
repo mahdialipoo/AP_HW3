@@ -1,22 +1,26 @@
 #ifndef BST_H
 #define BST_H
 #include <iostream>
+#include <queue>
+#include <functional>
+#include <map>
+#include <vector>
 class BST;
 class BST
 {
 public:
     class Node;
     Node *&get_root();
-    BST();              /*
-                  void bfs(std::function<void(Node *&node)> func);
-                  size_t length();*/
+    BST();
+    void bfs(std::function<void(Node *&node)>);
+    // size_t length();
     bool add_node(int); /*
      Node **find_node(int value);
      Node **find_parrent(int value);
      Node **find_successor(int value);
      bool delete_node(int value);*/
 
-    // private:
+private:
     Node *root;
 };
 class BST::Node

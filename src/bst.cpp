@@ -60,3 +60,29 @@ bool BST::add_node(int value)
 
 // BST::BST(const &BST){};
 BST::Node *&BST::get_root() { return root; }
+void BST::bfs(std::function<void(BST::Node *&node)> func)
+{
+    // const static int MAXN = 100;
+    std::map<Node *, bool> mark;
+    std::queue<Node *> q;
+    Node *state{root};
+    mark[state] = true;
+    q.push(state);
+    while (q.size())
+    {
+        state = q.front();
+        // std::cout << *state << std::endl;
+        func(state);
+        q.pop();
+        if ((!mark[state->right]) && (state->right != nullptr))
+        {
+            mark[state->right] = 1;
+            q.push(state->right);
+        }
+        if ((!mark[state->left]) && (state->left != nullptr))
+        {
+            mark[state->left] = 1;
+            q.push(state->left);
+        }
+    }
+}

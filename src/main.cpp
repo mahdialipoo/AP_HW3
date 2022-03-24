@@ -7,10 +7,15 @@ int main(int argc, char **argv)
     if (0) // make false to run unit-tests
     {
         BST bst{};
+        bst.add_node(25);
         bst.add_node(10);
-        bst.add_node(20);
-        bst.add_node(5);
-        std::cout << ((bst.root)->value) << std::endl;
+        bst.add_node(50);
+        bst.add_node(53);
+        bst.add_node(57);
+        bst.add_node(46);
+        std::vector<int> values;
+        bst.bfs([&values](BST::Node *&node)
+                { values.push_back(node->value); });
         //  debug section
     }
     else
