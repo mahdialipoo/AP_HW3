@@ -4,7 +4,8 @@ BST::Node::Node(int _value, BST::Node *_left, BST::Node *_right) : value{_value}
 BST::Node::Node(const BST::Node &node) : value{node.value}, left{node.left}, right{node.right} {};
 std::ostream &operator<<(std::ostream &stream, const BST::Node &node)
 {
-    stream << "node =>\t" << &node << "\t, value :" << node.value << "\t, left:" << node.left << "\t, right:" << node.right;
+    stream << &node << "\t=>"
+           << " value :" << node.value << "\tleft:" << node.left << "\tright:" << node.right;
     return stream;
 }
 bool BST::Node::operator==(const int &n) { return n == value; }
@@ -59,7 +60,11 @@ bool BST::add_node(int value)
 }
 
 // BST::BST(const &BST){};
-BST::Node *&BST::get_root() { return root; }
+BST::Node *&BST::get_root()
+{
+    Node *&v{root};
+    return v;
+}
 void BST::bfs(std::function<void(BST::Node *&node)> func)
 {
     // const static int MAXN = 100;
@@ -85,4 +90,143 @@ void BST::bfs(std::function<void(BST::Node *&node)> func)
             q.push(state->left);
         }
     }
+}
+size_t BST::length()
+{
+    size_t t{};
+    bfs([&t](BST::Node *&node)
+        { t++; });
+    return t;
+}
+std::ostream &operator<<(std::ostream &stream, BST &bst)
+{
+    // stream << std::string("*", 80) << std::endl;
+
+    bst.bfs([&stream](BST::Node *&node)
+            { stream << *node << std::endl; });
+    // stream << std::string("*", 80) << std::endl;
+
+    return stream;
+}
+
+BST::Node **BST::find_node(int value)
+{
+    Node **state{&root};
+    while (true)
+    {
+        if (value == (**state))
+            return state;
+        else if (value > (**state) && ((*state)->right) != nullptr)
+            state = &((*state)->right);
+
+        else if (value < (**state) && ((*state)->left) != nullptr)
+            state = &((*state)->left);
+        else
+            return nullptr;
+    }
+    return nullptr;
+}
+BST::Node **BST::find_parrent(int value)
+{
+    Node **state{&root};
+    while (true)
+    {
+        if (((((*state)->left) != nullptr) && value == (*(*state)->left)) || ((((*state)->right) != nullptr) && value == (*(*state)->right)))
+            return state;
+        else if ((((*state)->right) != nullptr) && value > **state)
+            state = &((*state)->right);
+        else if (((*state)->left) != nullptr && value < **state)
+            state = &((*state)->left);
+        else
+            return nullptr;
+    }
+    return nullptr;
+}
+BST::Node **BST::find_successor(int value)
+{
+    Node **state{find_node(value)};
+    if ((*state)->left == nullptr)
+        state = &((*state)->right);
+    else
+        state = &((*state)->left);
+    while (true)
+    {
+        if ((*state)->left == nullptr && (*state)->right == nullptr)
+            return state;
+        else if ((*state)->right == nullptr)
+            state = &((*state)->left);
+
+        else if ((*state)->right != nullptr)
+            state = &((*state)->right);
+        else
+            return nullptr;
+    }
+    return nullptr;
+}
+BST::~BST()
+{
+    std::vector<Node *> nodes;
+    bfs([&nodes](BST::Node *&node)
+        { nodes.push_back(node); });
+    for (auto &node : nodes)
+        delete node;
+}
+
+bool BST::delete_node(int value)
+{
+    if (find_node(value) == nullptr)
+        return false;
+    Node *v{*find_node(value)};
+    Node *pr{};
+    if (find_parrent(value) != nullptr)
+        pr = *find_parrent(value);
+    if (v->right == nullptr && v->left == nullptr)
+    {
+        if (pr != nullptr)
+            if (pr->value > *v)
+                pr->left = nullptr;
+            else
+                pr->right = nullptr;
+    }
+    else if (v->right != nullptr && v->left == nullptr)
+    {
+        if (pr != nullptr)
+            if (pr->value > *v)
+                pr->left = v->right;
+            else
+                pr->right = v->right;
+    }
+    else if (v->right == nullptr && v->left != nullptr)
+    {
+        if (pr != nullptr)
+            if (pr->value > *v)
+                pr->left = v->left;
+            else
+                pr->right = v->left;
+    }
+    else
+    {
+        Node *ps{*find_successor(value)};
+        ps->left = v->left;
+        ps->right = v->right;
+        Node *pspr{(*find_parrent(ps->value))};
+        if (pspr->value > ps->value)
+            pspr->left = nullptr;
+        else
+            pspr->right = nullptr;
+        if (pr != nullptr)
+            if (pr->value > *v)
+                pr->left = ps;
+            else
+                pr->right = ps;
+        else
+            root = ps;
+    }
+    delete v;
+    return true;
+}
+BST::BST(BST &bst) : root{new BST::Node{bst.get_root()->value, nullptr, nullptr}}
+{
+    bst.bfs([](BST::Node *&node)
+            { this->add_node(node->value); });
 }

@@ -4,6 +4,7 @@
 #include <queue>
 #include <functional>
 #include <map>
+#include <string>
 #include <vector>
 class BST;
 class BST
@@ -12,13 +13,15 @@ public:
     class Node;
     Node *&get_root();
     BST();
+    BST(BST &);
+    ~BST();
     void bfs(std::function<void(Node *&node)>);
-    // size_t length();
-    bool add_node(int); /*
-     Node **find_node(int value);
-     Node **find_parrent(int value);
-     Node **find_successor(int value);
-     bool delete_node(int value);*/
+    size_t length();
+    bool add_node(int);
+    Node **find_node(int);
+    Node **find_parrent(int);
+    Node **find_successor(int);
+    bool delete_node(int);
 
 private:
     Node *root;
@@ -44,4 +47,5 @@ bool operator>(const int &, const BST::Node &);
 bool operator<(const int &, const BST::Node &);
 bool operator<=(const int &, const BST::Node &);
 bool operator>=(const int &, const BST::Node &);
+std::ostream &operator<<(std::ostream &, BST &);
 #endif // BST_H
