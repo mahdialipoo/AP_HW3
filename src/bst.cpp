@@ -165,16 +165,16 @@ BST::Node **BST::find_successor(int value)
             return nullptr;
     }
     return nullptr;
-}
-BST::~BST()
-{
-    std::vector<Node *> nodes;
-    bfs([&nodes](BST::Node *&node)
-        { nodes.push_back(node); });
-    for (auto &node : nodes)
-        delete node;
-}
-
+} /*
+ BST::~BST()
+ {
+     std::vector<Node *> nodes;
+     bfs([&nodes](BST::Node *&node)
+         { nodes.push_back(node); });
+     for (auto &node : nodes)
+         delete node;
+ }
+ */
 bool BST::delete_node(int value)
 {
     if (find_node(value) == nullptr)
@@ -237,15 +237,42 @@ BST &BST::operator=(BST &bst)
 {
     if (root == bst.get_root())
         return *this;
-    while (length())
-        delete_node((*find_successor(root->value))->value);
+    std::vector<Node *> nodes;
+    bfs([&nodes](BST::Node *&node)
+        { nodes.push_back(node); });
+    for (auto &node : nodes)
+        delete node;
     bst.bfs([this](BST::Node *&node)
             { add_node(node->value); });
     return *this;
 }
 BST::BST(BST &&bst)
 {
-    while (length())
-        delete_node((*find_successor(root->value))->value);
-    root = bst.get_root();
+    root = &*bst.get_root();
+}
+BST &BST::operator=(BST &&bst)
+{
+    std::vector<Node *> nodes;
+    bfs([&nodes](BST::Node *&node)
+        { nodes.push_back(node); });
+    for (auto &node : nodes)
+        delete node;
+    root = &*bst.get_root();
+    return *this;
+}
+BST::BST(int argc, int *argv[]) : BST::BST()
+{
+    std::cout << "i" << std::endl;
+}
+BST &BST::operator++()
+{
+    bfs([](BST::Node *&node)
+        { ++node->value; });
+    return *this;
+}
+const BST BST::operator++(int)
+{
+    auto copy{*this};
+    ++(*this);
+    return copy;
 }

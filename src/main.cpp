@@ -7,17 +7,6 @@ int main(int argc, char **argv)
     if (0) // make false to run unit-tests
     {
 
-        BST bst{};
-        bst.add_node(5);
-        bst.add_node(10);
-        bst.add_node(50);
-
-        BST equal{};
-        bst.add_node(51);
-        bst.add_node(66);
-        bst.add_node(10);
-        equal = bst;
-        std::cout << bst.length() << std::endl;
         //    bst.delete_node(25);
         //    std::cout << bst.length() << std::endl;
         //    std::cout << bst.get_root()->left->left->right->value << std::endl;
