@@ -7,7 +7,6 @@
 #include <string>
 #include <iomanip>
 #include <vector>
-#include <initializer_list>
 class BST;
 class BST
 {
@@ -16,7 +15,7 @@ public:
     Node *&get_root();
     BST();
     BST(BST &);
-    //~BST();
+    ~BST();
     BST(BST &&);
     void bfs(std::function<void(Node *&node)>);
     size_t length();

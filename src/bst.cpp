@@ -76,18 +76,17 @@ void BST::bfs(std::function<void(BST::Node *&node)> func)
         while (q.size())
         {
             state = q.front();
-            // std::cout << *state << std::endl;
             func(state);
             q.pop();
-            if ((!mark[state->right]) && (state->right != nullptr))
-            {
-                mark[state->right] = 1;
-                q.push(state->right);
-            }
             if ((!mark[state->left]) && (state->left != nullptr))
             {
                 mark[state->left] = 1;
                 q.push(state->left);
+            }
+            if ((!mark[state->right]) && (state->right != nullptr))
+            {
+                mark[state->right] = 1;
+                q.push(state->right);
             }
         }
     }
@@ -165,16 +164,19 @@ BST::Node **BST::find_successor(int value)
             return nullptr;
     }
     return nullptr;
-} /*
- BST::~BST()
- {
-     std::vector<Node *> nodes;
-     bfs([&nodes](BST::Node *&node)
-         { nodes.push_back(node); });
-     for (auto &node : nodes)
-         delete node;
- }
- */
+}
+BST::~BST()
+{
+    if (!root)
+    {
+        std::vector<Node *> nodes;
+        bfs([&nodes](BST::Node *&node)
+            { nodes.push_back(node); });
+        for (auto &node : nodes)
+            delete node;
+    }
+}
+
 bool BST::delete_node(int value)
 {
     if (find_node(value) == nullptr)
@@ -248,7 +250,7 @@ BST &BST::operator=(BST &bst)
 }
 BST::BST(BST &&bst)
 {
-    root = &*bst.get_root();
+    root = bst.get_root();
 }
 BST &BST::operator=(BST &&bst)
 {
