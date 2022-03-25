@@ -5,6 +5,7 @@
 #include <functional>
 #include <map>
 #include <string>
+#include <iomanip>
 #include <vector>
 class BST;
 class BST
@@ -15,6 +16,7 @@ public:
     BST();
     BST(BST &);
     ~BST();
+    BST(BST &&);
     void bfs(std::function<void(Node *&node)>);
     size_t length();
     bool add_node(int);
@@ -22,6 +24,7 @@ public:
     Node **find_parrent(int);
     Node **find_successor(int);
     bool delete_node(int);
+    BST &operator=(BST &);
 
 private:
     Node *root;

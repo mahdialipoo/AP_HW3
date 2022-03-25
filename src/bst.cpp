@@ -5,7 +5,7 @@ BST::Node::Node(const BST::Node &node) : value{node.value}, left{node.left}, rig
 std::ostream &operator<<(std::ostream &stream, const BST::Node &node)
 {
     stream << &node << "\t=>"
-           << " value :" << node.value << "\tleft:" << node.left << "\tright:" << node.right;
+           << " value :" << std::setw(10) << std::left << node.value << "left:" << std::setw(10) << std::left << node.left << "    right:" << std::setw(10) << std::left << node.right;
     return stream;
 }
 bool BST::Node::operator==(const int &n) { return n == value; }
@@ -59,7 +59,6 @@ bool BST::add_node(int value)
     return false;
 }
 
-// BST::BST(const &BST){};
 BST::Node *&BST::get_root()
 {
     Node *&v{root};
@@ -67,32 +66,36 @@ BST::Node *&BST::get_root()
 }
 void BST::bfs(std::function<void(BST::Node *&node)> func)
 {
-    // const static int MAXN = 100;
-    std::map<Node *, bool> mark;
-    std::queue<Node *> q;
-    Node *state{root};
-    mark[state] = true;
-    q.push(state);
-    while (q.size())
+    if (root)
     {
-        state = q.front();
-        // std::cout << *state << std::endl;
-        func(state);
-        q.pop();
-        if ((!mark[state->right]) && (state->right != nullptr))
+        std::map<Node *, bool> mark;
+        std::queue<Node *> q;
+        Node *state{root};
+        mark[state] = true;
+        q.push(state);
+        while (q.size())
         {
-            mark[state->right] = 1;
-            q.push(state->right);
-        }
-        if ((!mark[state->left]) && (state->left != nullptr))
-        {
-            mark[state->left] = 1;
-            q.push(state->left);
+            state = q.front();
+            // std::cout << *state << std::endl;
+            func(state);
+            q.pop();
+            if ((!mark[state->right]) && (state->right != nullptr))
+            {
+                mark[state->right] = 1;
+                q.push(state->right);
+            }
+            if ((!mark[state->left]) && (state->left != nullptr))
+            {
+                mark[state->left] = 1;
+                q.push(state->left);
+            }
         }
     }
 }
 size_t BST::length()
 {
+    if (!root)
+        return 0;
     size_t t{};
     bfs([&t](BST::Node *&node)
         { t++; });
@@ -100,11 +103,11 @@ size_t BST::length()
 }
 std::ostream &operator<<(std::ostream &stream, BST &bst)
 {
-    // stream << std::string("*", 80) << std::endl;
-
+    stream << std::string(76, '*') << std::endl;
     bst.bfs([&stream](BST::Node *&node)
             { stream << *node << std::endl; });
-    // stream << std::string("*", 80) << std::endl;
+    stream << "binary search tree size: " << bst.length() << std::endl;
+    stream << std::string(76, '*') << std::endl;
 
     return stream;
 }
@@ -225,8 +228,24 @@ bool BST::delete_node(int value)
     delete v;
     return true;
 }
-BST::BST(BST &bst) : root{new BST::Node{bst.get_root()->value, nullptr, nullptr}}
+BST::BST(BST &bst) : BST::BST()
 {
-    bst.bfs([](BST::Node *&node)
-            { this->add_node(node->value); });
+    bst.bfs([this](BST::Node *&node)
+            { add_node(node->value); });
+}
+BST &BST::operator=(BST &bst)
+{
+    if (root == bst.get_root())
+        return *this;
+    while (length())
+        delete_node((*find_successor(root->value))->value);
+    bst.bfs([this](BST::Node *&node)
+            { add_node(node->value); });
+    return *this;
+}
+BST::BST(BST &&bst)
+{
+    while (length())
+        delete_node((*find_successor(root->value))->value);
+    root = bst.get_root();
 }
