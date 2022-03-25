@@ -262,9 +262,10 @@ BST &BST::operator=(BST &&bst)
     root = &*bst.get_root();
     return *this;
 }
-BST::BST(int argc, int *argv[]) : BST::BST()
+BST::BST(std::initializer_list<int> mList) : BST::BST()
 {
-    std::cout << "i" << std::endl;
+    for (auto i : mList)
+        add_node(i);
 }
 BST &BST::operator++()
 {
@@ -272,7 +273,7 @@ BST &BST::operator++()
         { ++node->value; });
     return *this;
 }
-const BST BST::operator++(int)
+BST BST::operator++(int)
 {
     auto copy{*this};
     ++(*this);

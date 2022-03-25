@@ -7,6 +7,7 @@
 #include <string>
 #include <iomanip>
 #include <vector>
+#include <initializer_list>
 class BST;
 class BST
 {
@@ -27,8 +28,8 @@ public:
     BST &operator=(BST &);
     BST &operator=(BST &&);
     BST &operator++();
-    const BST operator++(int);
-    BST(int, int *[]);
+    BST operator++(int);
+    BST(std::initializer_list<int>);
 
 private:
     Node *root;
