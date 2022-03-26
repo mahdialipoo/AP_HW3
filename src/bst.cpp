@@ -8,18 +8,48 @@ std::ostream &operator<<(std::ostream &stream, const BST::Node &node)
            << " value :" << std::setw(10) << std::left << node.value << "left:" << std::setw(10) << std::left << node.left << "    right:" << std::setw(10) << std::left << node.right;
     return stream;
 }
+std::ostream &operator<<(std::ostream &stream, BST &bst)
+{
+    stream << std::string(76, '*') << std::endl;
+    bst.bfs([&stream](BST::Node *&node)
+            { stream << *node << std::endl; });
+    stream << "binary search tree size: " << bst.length() << std::endl;
+    stream << std::string(76, '*') << std::endl;
+
+    return stream;
+}
 bool BST::Node::operator==(const int &n) { return n == value; }
 bool BST::Node::operator>(const int &n) { return n < value; }
 bool BST::Node::operator<(const int &n) { return n > value; }
 bool BST::Node::operator<=(const int &n) { return n >= value; }
 bool BST::Node::operator>=(const int &n) { return n <= value; }
-
 bool operator==(const int &n, const BST::Node &node) { return n == node.value; }
 bool operator>(const int &n, const BST::Node &node) { return n > node.value; }
 bool operator<(const int &n, const BST::Node &node) { return n < node.value; }
 bool operator<=(const int &n, const BST::Node &node) { return n <= node.value; }
 bool operator>=(const int &n, const BST::Node &node) { return n >= node.value; }
 BST::BST() : root{nullptr} {};
+BST::BST(std::initializer_list<int> mList) : BST::BST()
+{
+    for (auto i : mList)
+        add_node(i);
+}
+BST::BST(BST &bst) : BST::BST()
+{
+    bst.bfs([this](BST::Node *&node)
+            { add_node(node->value); });
+}
+BST::~BST()
+{
+    if (!root)
+    {
+        std::vector<Node *> nodes;
+        bfs([&nodes](BST::Node *&node)
+            { nodes.push_back(node); });
+        for (auto &node : nodes)
+            delete node;
+    }
+}
 bool BST::add_node(int value)
 {
     if (root == nullptr)
@@ -58,7 +88,6 @@ bool BST::add_node(int value)
     }
     return false;
 }
-
 BST::Node *&BST::get_root()
 {
     Node *&v{root};
@@ -100,17 +129,6 @@ size_t BST::length()
         { t++; });
     return t;
 }
-std::ostream &operator<<(std::ostream &stream, BST &bst)
-{
-    stream << std::string(76, '*') << std::endl;
-    bst.bfs([&stream](BST::Node *&node)
-            { stream << *node << std::endl; });
-    stream << "binary search tree size: " << bst.length() << std::endl;
-    stream << std::string(76, '*') << std::endl;
-
-    return stream;
-}
-
 BST::Node **BST::find_node(int value)
 {
     Node **state{&root};
@@ -165,18 +183,6 @@ BST::Node **BST::find_successor(int value)
     }
     return nullptr;
 }
-BST::~BST()
-{
-    if (!root)
-    {
-        std::vector<Node *> nodes;
-        bfs([&nodes](BST::Node *&node)
-            { nodes.push_back(node); });
-        for (auto &node : nodes)
-            delete node;
-    }
-}
-
 bool BST::delete_node(int value)
 {
     if (find_node(value) == nullptr)
@@ -230,11 +236,6 @@ bool BST::delete_node(int value)
     delete v;
     return true;
 }
-BST::BST(BST &bst) : BST::BST()
-{
-    bst.bfs([this](BST::Node *&node)
-            { add_node(node->value); });
-}
 BST &BST::operator=(BST &bst)
 {
     if (root == bst.get_root())
@@ -248,10 +249,6 @@ BST &BST::operator=(BST &bst)
             { add_node(node->value); });
     return *this;
 }
-BST::BST(BST &&bst)
-{
-    root = bst.get_root();
-}
 BST &BST::operator=(BST &&bst)
 {
     std::vector<Node *> nodes;
@@ -262,10 +259,9 @@ BST &BST::operator=(BST &&bst)
     root = &*bst.get_root();
     return *this;
 }
-BST::BST(std::initializer_list<int> mList) : BST::BST()
+BST::BST(BST &&bst)
 {
-    for (auto i : mList)
-        add_node(i);
+    root = bst.get_root();
 }
 BST &BST::operator++()
 {

@@ -112,7 +112,6 @@ TEST(HW3Test, TEST9)
     EXPECT_TRUE(std::find(values.begin(), values.end(), 50) != values.end());
     EXPECT_TRUE(std::find(values.begin(), values.end(), 53) != values.end());
 }
-
 TEST(HW3Test, TEST10)
 {
     BST bst{};
@@ -345,7 +344,6 @@ TEST(HW3Test, TEST22)
     EXPECT_EQ(bst.get_root()->left->left->right, nullptr);
     EXPECT_EQ(bst.get_root()->left->left->value, 5);
 }
-
 TEST(HW3Test, TEST23)
 {
     BST bst{};
@@ -451,7 +449,6 @@ TEST(HW3Test, TEST29)
 TEST(HW3Test, TEST30)
 {
     BST bst{5, 1, 10, 2, 8, 50, 4, 60};
-
     BST bst2{++bst};
     std::vector<int> values;
     EXPECT_EQ(bst.get_root()->value, 6);

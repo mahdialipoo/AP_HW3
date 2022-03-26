@@ -16,8 +16,9 @@ public:
     Node *&get_root();
     BST();
     BST(BST &);
-    ~BST();
+    BST(std::initializer_list<int>);
     BST(BST &&);
+    ~BST();
     void bfs(std::function<void(Node *&node)>);
     size_t length();
     bool add_node(int);
@@ -29,7 +30,6 @@ public:
     BST &operator=(BST &&);
     BST &operator++();
     BST operator++(int);
-    BST(std::initializer_list<int>);
 
 private:
     Node *root;
@@ -50,10 +50,10 @@ public:
     bool operator<=(const int &);
 };
 std::ostream &operator<<(std::ostream &, const BST::Node &);
+std::ostream &operator<<(std::ostream &, BST &);
 bool operator==(const int &, const BST::Node &);
 bool operator>(const int &, const BST::Node &);
 bool operator<(const int &, const BST::Node &);
 bool operator<=(const int &, const BST::Node &);
 bool operator>=(const int &, const BST::Node &);
-std::ostream &operator<<(std::ostream &, BST &);
 #endif // BST_H

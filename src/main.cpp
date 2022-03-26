@@ -4,16 +4,9 @@
 
 int main(int argc, char **argv)
 {
-    if (0) // make false to run unit-tests
+    if (false) // make false to run unit-tests
     {
-        BST bst{1, 2, 3};
-
-        // BST bst{1, 2, 3, 6, 7, 8, 9, 10};
-        std::cout << bst << std::endl;
-        //    bst.delete_node(25);
-        //    std::cout << bst.length() << std::endl;
-        //    std::cout << bst.get_root()->left->left->right->value << std::endl;
-        //      debug section
+        // debug section
     }
     else
     {
