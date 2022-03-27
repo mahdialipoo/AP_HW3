@@ -39,6 +39,7 @@ class BST::Node
 public:
     Node(int, Node *, Node *);
     Node();
+    ~Node();
     Node(const Node &);
     int value;
     Node *left;

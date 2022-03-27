@@ -1,7 +1,8 @@
 #include "bst.h"
-BST::Node::Node() : value{}, right{nullptr}, left{nullptr} {};
+BST::Node::Node() : value{0}, right{nullptr}, left{nullptr} {};
 BST::Node::Node(int _value, BST::Node *_left, BST::Node *_right) : value{_value}, left{_left}, right{_right} {};
 BST::Node::Node(const BST::Node &node) : value{node.value}, left{node.left}, right{node.right} {};
+BST::Node::~Node(){};
 std::ostream &operator<<(std::ostream &stream, const BST::Node &node)
 {
     stream << &node << "\t=>"
@@ -31,8 +32,10 @@ bool operator>=(const int &n, const BST::Node &node) { return n >= node.value; }
 BST::BST() : root{nullptr} {};
 BST::BST(std::initializer_list<int> mList) : BST::BST()
 {
-    for (auto i : mList)
-        add_node(i);
+    for (std::initializer_list<int>::iterator it{mList.begin()}; it != mList.end(); ++it)
+    {
+        add_node(*it);
+    }
 }
 BST::BST(BST &bst) : BST::BST()
 {
@@ -41,21 +44,17 @@ BST::BST(BST &bst) : BST::BST()
 }
 BST::~BST()
 {
-    if (!root)
-    {
-        std::vector<Node *> nodes;
-        bfs([&nodes](BST::Node *&node)
-            { nodes.push_back(node); });
-        for (auto &node : nodes)
-            delete node;
-    }
+    std::vector<Node *> nodes;
+    bfs([&nodes](BST::Node *&node)
+        { nodes.push_back(node); });
+    for (auto &node : nodes)
+        delete node;
 }
 bool BST::add_node(int value)
 {
     if (root == nullptr)
     {
-        Node *p{new Node{value, nullptr, nullptr}};
-        root = p;
+        root = new Node{value, nullptr, nullptr};
         return true;
     }
     Node *state{root};
@@ -66,22 +65,24 @@ bool BST::add_node(int value)
         else if (value > (*state))
         {
             if ((state->right) != nullptr)
+            {
                 state = (state->right);
+            }
             else
             {
-                Node *p{new Node{value, nullptr, nullptr}};
-                (state->right) = p;
+                (state->right) = new Node{value, nullptr, nullptr};
                 return true;
             }
         }
         else if (value < (*state))
         {
             if ((state->left) != nullptr)
+            {
                 state = (state->left);
+            }
             else
             {
-                Node *p{new Node{value, nullptr, nullptr}};
-                (state->left) = p;
+                (state->left) = new Node{value, nullptr, nullptr};
                 return true;
             }
         }
@@ -256,12 +257,13 @@ BST &BST::operator=(BST &&bst)
         { nodes.push_back(node); });
     for (auto &node : nodes)
         delete node;
-    root = &*bst.get_root();
+    root = bst.get_root();
+    bst.get_root() = nullptr;
     return *this;
 }
-BST::BST(BST &&bst)
+BST::BST(BST &&bst) : root{bst.get_root()}
 {
-    root = bst.get_root();
+    bst.get_root() = nullptr;
 }
 BST &BST::operator++()
 {
