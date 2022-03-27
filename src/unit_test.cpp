@@ -442,7 +442,7 @@ TEST(HW3Test, TEST28)
 TEST(HW3Test, TEST29)
 {
     BST bst1{5, 1, 10, 2, 8, 50, 4, 60};
-    BST bst2{3, 2, 100, 20, 8, 50, 4, 60, 44, 13};
+    BST bst2{3, 2, 100, 20, 8, 50, 4, 60, 44, 23};
     EXPECT_EQ((*bst1.find_successor(5))->value, 4);
     EXPECT_EQ(bst2.length(), 10);
 }
